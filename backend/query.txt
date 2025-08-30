@@ -1,0 +1,28 @@
+-- Table: devices
+CREATE TABLE IF NOT EXISTS devices (
+    id SERIAL PRIMARY KEY,
+    ip_address VARCHAR(45) NOT NULL,
+    hostname VARCHAR(100),
+    mac_address VARCHAR(17),
+    status VARCHAR(20) DEFAULT 'offline',
+    last_seen TIMESTAMP DEFAULT NOW()
+);
+
+-- Table: intrusions
+CREATE TABLE IF NOT EXISTS intrusions (
+    id SERIAL PRIMARY KEY,
+    device_id INT REFERENCES devices(id) ON DELETE CASCADE,
+    type VARCHAR(50) NOT NULL,
+    severity VARCHAR(10) NOT NULL,
+    timestamp TIMESTAMP DEFAULT NOW(),
+    details TEXT
+);
+
+-- Table: alerts
+CREATE TABLE IF NOT EXISTS alerts (
+    id SERIAL PRIMARY KEY,
+    intrusion_id INT REFERENCES intrusions(id) ON DELETE CASCADE,
+    message TEXT NOT NULL,
+    is_resolved BOOLEAN DEFAULT FALSE,
+    timestamp TIMESTAMP DEFAULT NOW()
+);

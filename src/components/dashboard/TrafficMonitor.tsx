@@ -11,44 +11,50 @@ interface TrafficData {
   status: 'normal' | 'warning' | 'critical';
 }
 
-export const TrafficMonitor = () => {
-  const [trafficData, setTrafficData] = useState<TrafficData[]>([]);
-  const [isLive, setIsLive] = useState(true);
+export const TrafficMonitor = ({ monitoring }: { monitoring: boolean }) => {
+  const [trafficData, setTrafficData] = useState<TrafficData[]>([
+    { timestamp: new Date().toLocaleTimeString(), inbound: 0, outbound: 0, threats: 0, status: 'normal' }
+  ]);
+  const [connected, setConnected] = useState(false);
 
-  // Simulate real-time traffic data
+  // WebSocket connection
   useEffect(() => {
-    const generateTrafficData = (): TrafficData => {
-      const inbound = Math.floor(Math.random() * 1000) + 100;
-      const outbound = Math.floor(Math.random() * 800) + 50;
-      const threats = Math.floor(Math.random() * 10);
-      
-      let status: 'normal' | 'warning' | 'critical' = 'normal';
-      if (threats > 5) status = 'critical';
-      else if (threats > 2) status = 'warning';
+    if (!monitoring) return; // only connect if monitoring has started
 
-      return {
-        timestamp: new Date().toLocaleTimeString(),
-        inbound,
-        outbound,
-        threats,
-        status,
-      };
+    const socket = new WebSocket("ws://localhost:8050/monitor/ws");
+
+    socket.onopen = () => {
+      setConnected(true);
+      // Ask backend for live status
+      socket.send(JSON.stringify({ command: "status" }));
     };
 
-    const interval = setInterval(() => {
-      if (isLive) {
-        setTrafficData(prev => [...prev.slice(-9), generateTrafficData()]);
+    socket.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+
+        // Expected backend response shape:
+        // { inbound: number, outbound: number, threats: number, status: "normal"|"warning"|"critical" }
+
+        const newData: TrafficData = {
+          timestamp: new Date().toLocaleTimeString(),
+          inbound: data.inbound_mbps ?? 0,
+          outbound: data.outbound_mbps ?? 0,
+          threats: data.threats ?? 0,
+          status: data.status ?? 'normal',
+        };
+
+        setTrafficData((prev) => [...prev.slice(-9), newData]); // keep last 10
+      } catch (err) {
+        console.error("Invalid WS message:", event.data);
       }
-    }, 2000);
+    };
 
-    // Initialize with some data
-    if (trafficData.length === 0) {
-      const initialData = Array.from({ length: 10 }, generateTrafficData);
-      setTrafficData(initialData);
-    }
+    socket.onclose = () => setConnected(false);
+    socket.onerror = () => setConnected(false);
 
-    return () => clearInterval(interval);
-  }, [isLive, trafficData.length]);
+    return () => socket.close();
+  }, [monitoring]);
 
   const latestData = trafficData[trafficData.length - 1];
 
@@ -72,9 +78,9 @@ export const TrafficMonitor = () => {
             <CardDescription>Live network traffic and threat detection</CardDescription>
           </div>
           <div className="flex items-center gap-2">
-            <Signal className={`h-4 w-4 ${isLive ? 'text-green-500' : 'text-gray-400'}`} />
-            <Badge variant={isLive ? 'default' : 'secondary'}>
-              {isLive ? 'LIVE' : 'PAUSED'}
+            <Signal className={`h-4 w-4 ${connected ? 'text-green-500' : 'text-gray-400'}`} />
+            <Badge variant={connected ? 'default' : 'secondary'}>
+              {connected ? 'LIVE' : 'PAUSED'}
             </Badge>
           </div>
         </div>
@@ -89,17 +95,17 @@ export const TrafficMonitor = () => {
                   <Network className="h-4 w-4 text-blue-500" />
                   <span className="text-sm font-medium">Inbound</span>
                 </div>
-                <span className="text-lg font-bold">{latestData.inbound} MB/s</span>
+                <span className="text-lg font-bold" text-blue-500>{latestData.inbound} MB/s</span>
               </div>
-              <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
+              <div className="flex items-center justify-between p-2 bg-muted rounded-lg">
                 <div className="flex items-center gap-2">
                   <Network className="h-4 w-4 text-green-500" />
                   <span className="text-sm font-medium">Outbound</span>
                 </div>
-                <span className="text-lg font-bold">{latestData.outbound} MB/s</span>
+                <span className="text-lg font-bold text-green-500">{latestData.outbound} MB/s</span>
               </div>
               <div className="flex items-center justify-between p-3 bg-muted rounded-lg">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
                   <span className="text-sm font-medium">Status</span>
                 </div>
                 <Badge variant={getStatusColor(latestData.status)}>

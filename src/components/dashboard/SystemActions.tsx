@@ -17,8 +17,8 @@ interface BlockedIP {
 export const SystemActions = () => {
   const [ipToBlock, setIpToBlock] = useState('');
   const [blockedIPs, setBlockedIPs] = useState<BlockedIP[]>([
-    { ip: '192.168.1.100', reason: 'Malicious activity', timestamp: new Date().toLocaleString(), status: 'active' },
-    { ip: '10.0.0.50', reason: 'Unauthorized access', timestamp: new Date().toLocaleString(), status: 'temporary' },
+    // { ip: '192.168.1.100', reason: 'Malicious activity', timestamp: new Date().toLocaleString(), status: 'active' },
+    // { ip: '10.0.0.50', reason: 'Unauthorized access', timestamp: new Date().toLocaleString(), status: 'temporary' },
   ]);
   const [systemStatus, setSystemStatus] = useState<'normal' | 'lockdown' | 'maintenance'>('normal');
   const { toast } = useToast();
