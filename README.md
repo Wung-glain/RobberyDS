@@ -77,7 +77,7 @@ The server will start at http://localhost:8000
 View the Dashboard: Your React app should be running at http://localhost:8080. The video stream will automatically connect via WebSocket.
 ## Dashboard UI
 
-![React application Dashboard showing user interface](public/screenshots/RBS.png)
+![React application Dashboard showing user interface](public/screenshots/RBS.PNG)
 
 ## Project Structure
 ```
