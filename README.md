@@ -1,73 +1,84 @@
-# Welcome to your Lovable project
+AI Security Dashboard: Real-Time Human Tracking & Analytics
+A high-performance surveillance dashboard that performs real-time human detection and tracking. This project uses YOLOv8 for computer vision, FastAPI for high-speed WebSocket streaming, and React for a responsive monitoring interface.
 
-## Project info
+🌟 Key Features
+Real-time Detection: Powered by YOLOv8 for industry-leading accuracy.
 
-**URL**: https://lovable.dev/projects/2c8ab03e-39ea-4413-8f43-e1de813efe7c
+Persistent Tracking: Custom centroid tracking to follow individuals across frames.
 
-## How can I edit this code?
+Suspicion Scoring: Dynamic algorithm that increases a "suspicion score" based on a person's duration and movement in the frame.
 
-There are several ways of editing your application.
+Optimized Performance: Uses frame-skipping and image resizing (320px) to ensure smooth 30+ FPS playback.
 
-**Use Lovable**
+Live WebSockets: Low-latency communication between the AI backend and the frontend.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2c8ab03e-39ea-4413-8f43-e1de813efe7c) and start prompting.
+🛠 Tech Stack
+Frontend: React, Tailwind CSS, Lucide Icons
 
-Changes made via Lovable will be committed automatically to this repo.
+Backend: Python, FastAPI, WebSockets
 
-**Use your preferred IDE**
+AI Engine: Ultralytics YOLOv8, OpenCV
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Environment: Python Virtual Environment (venv)
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+🚀 Getting Started
+Follow these steps to set up the project on your local machine using a virtual environment.
 
-Follow these steps:
+1. Clone the Repository
+Bash
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+git clone https://github.com/your-username/your-repo-name.git
+cd your-repo-name
+2. Backend Setup (Python)
+We use a virtual environment to keep dependencies isolated and stable.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Bash
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Navigate to backend folder
+cd backend
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+# Create the virtual environment
+python -m venv myenv
 
-**Edit a file directly in GitHub**
+# Activate the environment
+# On Windows:
+myenv\Scripts\activate
+# On Mac/Linux:
+source myenv/bin/activate
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+# Install required packages
+pip install fastapi uvicorn ultralytics opencv-python numpy
+3. Frontend Setup (React)
+Open a new terminal window:
 
-**Use GitHub Codespaces**
+Bash
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+cd frontend
+npm install
+npm start
+🏃 Running the Application
+Start the Backend: Ensure your virtual environment is active and run:
 
-## What technologies are used for this project?
+Bash
 
-This project is built with:
+python main.py
+The server will start at http://localhost:8000
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+View the Dashboard: Your React app should be running at http://localhost:3000. The video stream will automatically connect via WebSocket.
 
-## How can I deploy this project?
+📁 Project Structure
+Plaintext
 
-Simply open [Lovable](https://lovable.dev/projects/2c8ab03e-39ea-4413-8f43-e1de813efe7c) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+├── backend/
+│   ├── myenv/             # Virtual Environment
+│   ├── videos/            # CCTV source files
+│   ├── main.py            # FastAPI WebSocket & AI Logic
+│   └── yolov8n.pt         # Pre-trained YOLO weights
+├── frontend/
+│   ├── src/
+│   │   ├── components/    # VideoCanvas & Dashboard UI
+│   │   └── App.js         # Application entry point
+│   └── package.json
+└── README.md
+🛡 License
+This project is licensed under the MIT License - see the LICENSE file for details.
