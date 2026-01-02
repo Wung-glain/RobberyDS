@@ -5,7 +5,13 @@
 /* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
 All colors MUST be HSL.
 */
-
+@keyframes scan {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+.animate-scan {
+  animation: scan 3s linear infinite;
+}
 @layer base {
   :root {
     --background: 0 0% 100%;
